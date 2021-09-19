@@ -20,7 +20,7 @@
 
 3. Set the <bucket_name> in the file backend.tf (bucket = "<bucket_name>")
 
-4. Change the path in security_groups.tf to the path of scripts public.sh and vpc.sh
+4. Change the <path> in security_groups.tf to the correct path of scripts public.sh and vpc.sh
 
 5. Initialize terraform
 #terraform init --reconfigure
