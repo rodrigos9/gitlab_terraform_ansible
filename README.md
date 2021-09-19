@@ -35,6 +35,7 @@
 
 #### Output:
 aws_instance.gitlab (local-exec):         "stdout_lines": [
+
 aws_instance.gitlab (local-exec):             "external_url 'https://<your_instance_ip>.compute-1.amazonaws.com'"
 
 ### Initial root password ###
