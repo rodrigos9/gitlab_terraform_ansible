@@ -1,0 +1,91 @@
+---
+- hosts: "{{ passed_in_hosts }}"
+  become: yes
+  remote_user: ec2-user
+  tasks:
+    - name: install packages
+      yum:
+        name: "{{ package }}"
+      vars:
+        package:
+        - curl
+        - policycoreutils
+        - openssh-server
+        - perl
+        - lynx
+        - mutt
+
+    - name: add_repo
+      get_url:
+        url: https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh
+        dest: /home/ec2-user/script.rpm.sh
+
+    - name: allow exec perm to script.rpm.sh
+      file:
+        path: /home/ec2-user/script.rpm.sh
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: install repo
+      shell: "/home/ec2-user/script.rpm.sh"
+
+    - name: install gitlab-ce
+      yum:
+        name: "{{ package }}"
+      vars:
+        package:
+        - gitlab-ce
+
+    - name: create certs directory
+      file:
+        path: /etc/git/ssl
+        state: directory
+        mode: 0700
+    
+    - name: ssl create key
+      openssl_privatekey:
+        path: /etc/git/ssl/gitlab.key
+        size: 2048
+        
+    - name: ssl create csr
+      openssl_csr:
+        path: /etc/git/ssl/gitlab.csr
+        privatekey_path: /etc/git/ssl/gitlab.key
+
+    - name: ssl create certificate
+      openssl_certificate:
+        provider: selfsigned
+        path: /etc/git/ssl/gitlab.crt
+        privatekey_path: /etc/git/ssl/gitlab.key
+        csr_path: /etc/git/ssl/gitlab.csr
+    
+    - name: change /etc/gitlab/gitlab.rb http
+      ansible.builtin.replace:
+        path: /etc/gitlab/gitlab.rb
+        regexp: "^external_url 'http://"
+        replace: "external_url 'https://"
+
+    - name: change /etc/gitlab/gitlab.rb ssl_cert
+      lineinfile:
+        path: /etc/gitlab/gitlab.rb
+        regexp: "# nginx['ssl_certificate'] = \"/etc/gitlab/ssl/#{node['fqdn']}.crt\""
+        line: "nginx['ssl_certificate'] = \"/etc/git/ssl/gitlab.crt\""
+
+    - name: change /etc/gitlab/gitlab.rb ssl_cert_key
+      lineinfile:
+        path: /etc/gitlab/gitlab.rb
+        regexp: "# nginx['ssl_certificate_key'] = \"/etc/gitlab/ssl/#{node['fqdn']}.key\""
+        line: "nginx['ssl_certificate_key'] = \"/etc/git/ssl/gitlab.key\""
+
+    - name: gitlab reload
+      command: gitlab-ctl reconfigure
+
+    - name: get url
+      shell:
+        cmd: cat /etc/gitlab/gitlab.rb |grep '^external_url'
+      register: grep_output
+
+    - name: Print
+      debug:
+        msg: "{{ grep_output }}"
