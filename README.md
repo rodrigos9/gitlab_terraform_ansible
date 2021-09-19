@@ -8,7 +8,7 @@
      - gitlab will be configured to use https and the security group will allow 443 from anywhere
      - there are 2 scripts public.sh (get your public IP to put in AWS SG) and vpc.sh (get your first available vpc and your 
      first availabe subnet inside the selected vpc and put  tags to terraform filter them) to run together with terraform
-     - ansible inventory is dynamic
+     - ansible inventory is dynamic and the path is ./ansible/inv_aws_ec2.yml
      - average deploy time is 11 min
 
 1. First, we need to configure aws credentials.
