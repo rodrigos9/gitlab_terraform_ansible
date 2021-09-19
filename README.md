@@ -1,4 +1,5 @@
-# gitlab_terraform_ansible
+# Deploy an AWS instance with Gitlab CE installed  on an existing AWS VPC & Subnet.
+
 # important informations : 
      - the config files are using us-east-1 aws region.
      - the size of instance that will be provisioned is t2.medium
