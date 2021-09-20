@@ -1,10 +1,10 @@
 # Deploy an AWS instance with Gitlab CE installed  on an existing AWS VPC & Subnet.
 
 # important informations : 
-     - the config files are using us-east-1 aws region.
-     - the size of instance that will be provisioned is t2.medium
-     - the public ip of the machine that is terraform will be added to security group
-     - dont forget to create a key-pair before terraform apply (the script is configured to get cat /etc/gitlab/initial_root_password instances.tf)
+     - We are using us-east-1 aws region.
+     - the size of instance that will be provisioned it's t2.medium
+     - the terraform machine public ip will be added to security group
+     - dont forget to create a key-pair before terraform apply (the script is configured to get /root/.ssh/id_rsa.pub in instances.tf)
      - the gitlab version will be gitlab-ce
      - gitlab will be configured to use https and the security group will allow 443 from anywhere
      - there are 2 scripts public.sh (get your public IP to put in AWS SG) and vpc.sh (get your first available vpc and your 
