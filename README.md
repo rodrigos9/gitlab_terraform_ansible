@@ -13,9 +13,11 @@
      - average deploy time is 11 min
 
 1. First, we need to configure aws credentials.
+
 #aws configure (programatic access)
 
 2. Create a bucket to store terraform state file.
+
 #aws s3api create-bucket --bucket <bucket_name>
 
 3. Set the <bucket_name> in the file backend.tf (bucket = "<bucket_name>")
@@ -23,18 +25,23 @@
 4. Change the <path> in security_groups.tf to the correct path of scripts public.sh and vpc.sh
 
 5. Initialize terraform
+
 #terraform init --reconfigure
 
 6. Format terraform
+     
 #terraform fmt
 
 7. Validate terraform
+     
 #terraform validate
 
 8. Plan terraform
+     
 #terraform plan
 
 9. Apply terraform
+     
 #terraform apply
 
 #### Output:
